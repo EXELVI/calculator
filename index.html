@@ -14,9 +14,12 @@
             margin: 50px auto;
         }
 
-        .calculator input {
+        .calculator #display {
             height: 60px;
             font-size: 24px;
+        }
+
+        .calculator input[type="text"] {
             text-align: right;
         }
 
@@ -25,8 +28,17 @@
             font-size: 24px;
         }
 
+        .calculator #resultGroup button {
+            height: initial;
+            font-size: initial;
+        }
+
         #history {
             margin-top: 20px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -38,10 +50,18 @@
     <div class="container">
         <div class="row justify-content-between">
             <div class="calculator border p-3 rounded shadow">
-                <div class="d-flex justify-content-between mb-3 input-group">
-                    <button class="btn btn-danger" onclick="backspace()"><i class="bi bi-backspace"></i></button>
-                    <button class="btn btn-outline-secondary" id="copyToClipboard"><i class="bi bi-clipboard"></i></button>
-                    <input type="text" id="display" class="form-control mb-3" readonly>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between input-group">
+                        <button class="btn btn-danger" onclick="backspace()"><i class="bi bi-backspace"></i></button>
+                        <button class="btn btn-outline-secondary" id="copyToClipboard"><i
+                                class="bi bi-clipboard"></i></button>
+                        <input type="text" id="display" class="form-control" readonly>
+                    </div>
+                    <div class="d-flex justify-content-between input-group" id="resultGroup">
+                        <button class="btn btn-secondary" id="copyToClipboardResult"><i
+                                class="bi bi-clipboard"></i></button>
+                        <input type="text" id="result" class="form-control" readonly>
+                    </div>
                 </div>
                 <div class="row g-2">
                     <div class="col-3">
@@ -183,7 +203,7 @@
                     </div>
                     <div class="col-3">
                         <button class="btn btn-secondary w-100" onclick="appendToDisplay(',')">,</button>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
@@ -196,8 +216,11 @@
         </div>
 
         <div id="history" class="border p-3 rounded shadow">
-            <h4>History</h4>
-            <ul id="historyList" class="list-unstyled">
+            <div class="d-flex justify-content-between mb-2">
+                <h4>History</h4>
+                <button class="btn btn-danger" onclick="localStorage.removeItem('history'); hist = []; updateHistory();"><i class="bi bi-trash"></i></button>
+            </div>
+            <ul id="historyList" class="list-group">
                 <!-- Storico delle operazioni -->
             </ul>
         </div>
@@ -246,19 +269,38 @@
             } else {
                 display.value = '-' + display.value;
             }
+            try {
+                let result = math.evaluate(display.value);
+                document.getElementById('result').value = result;
+            } catch (error) {
+                document.getElementById('result').value = 'Error';
+            }
         }
 
         function appendToDisplay(value) {
             document.getElementById('display').value += value;
+            try {
+                let result = math.evaluate(document.getElementById('display').value);
+                document.getElementById('result').value = result;
+            } catch (error) {
+                document.getElementById('result').value = 'Error';
+            }
         }
 
         function clearDisplay() {
             document.getElementById('display').value = '';
+            document.getElementById('result').value = '';
         }
 
         function backspace() {
             let display = document.getElementById('display');
             display.value = display.value.slice(0, -1);
+            try {
+                let result = math.evaluate(display.value);
+                document.getElementById('result').value = result;
+            } catch (error) {
+                document.getElementById('result').value = 'Error';
+            }
         }
 
         function updateHistory() {
@@ -267,8 +309,10 @@
             hist.forEach((item, index) => {
                 let li = document.createElement('li');
                 li.innerHTML = `<strong>${item.expr}</strong> = ${item.result}`;
+                li.classList = 'list-group-item';
                 li.addEventListener('click', function () {
                     document.getElementById('display').value = item.expr;
+                    document.getElementById('result').value = item.result;
                 });
                 li.style.cursor = 'pointer';
                 historyList.appendChild(li);
@@ -317,7 +361,8 @@
 
                 addStep("= " + result);
 
-                display.value = result;
+                display.value = "";
+                document.getElementById('result').value = result;
             } catch (error) {
                 display.value = 'Error';
                 hy.result = 'Error';
@@ -331,6 +376,24 @@
             updateHistory();
         }
 
+        
+        document.addEventListener('keydown', function (event) {
+            const key = event.key;
+            if (/\d/.test(key)) {
+                appendToDisplay(key);
+            } else if (['+', '-', '*', '/'].includes(key)) {
+                appendToDisplay(key);
+            } else if (key === 'Enter') {
+                calculateResult();
+            } else if (key === 'Backspace') {
+                backspace();
+            } else if (key === 'Escape') {
+                clearDisplay();
+            }
+        });
+
+        
+
         window.addEventListener('load', function () {
             updateHistory();
 
@@ -343,6 +406,18 @@
                     document.getElementById('copyToClipboard').innerHTML = '<i class="bi bi-clipboard"></i>';
                 }, 1000);
             });
+
+            document.getElementById('copyToClipboardResult').addEventListener('click', function () {
+                let result = document.getElementById('result');
+                navigator.clipboard.writeText(result.value);
+
+                document.getElementById('copyToClipboardResult').innerHTML = '<i class="bi bi-clipboard-check"></i>';
+                setTimeout(() => {
+                    document.getElementById('copyToClipboardResult').innerHTML = '<i class="bi bi-clipboard"></i>';
+                }, 1000);
+            });
+
+
         });
 
         window.addEventListener('beforeunload', function () {
