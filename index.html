@@ -40,6 +40,7 @@
             <div class="calculator border p-3 rounded shadow">
                 <div class="d-flex justify-content-between mb-3 input-group">
                     <button class="btn btn-danger" onclick="backspace()"><i class="bi bi-backspace"></i></button>
+                    <button class="btn btn-outline-secondary" id="copyToClipboard"><i class="bi bi-clipboard"></i></button>
                     <input type="text" id="display" class="form-control mb-3" readonly>
                 </div>
                 <div class="row g-2">
@@ -112,63 +113,77 @@
             <div class="calculator border p-3 rounded shadow">
                 <div class="row g-2">
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.PI')">π</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('(')">(</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.E')">e</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay(')')">)</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.sqrt(')">√</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('pi')">π</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100"
-                            onclick="appendToDisplay('Math.pow(')">x<sup>y</sup></button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('e')">e</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.sin(')">sin</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('sqrt(')">√</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.cos(')">cos</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('pow(')">x<sup>y</sup></button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.tan(')">tan</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('sin(')">sin</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.log(')">log</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('cos(')">cos</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.log10(')">log10</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('tan(')">tan</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.exp(')">exp</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('log(')">log</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.abs(')">abs</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('log10(')">log10</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.floor(')">floor</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('exp(')">exp</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.ceil(')">ceil</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('abs(')">abs</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.round(')">round</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('floor(')">floor</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.min(')">min</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('ceil(')">ceil</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.max(')">max</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('round(')">round</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.asin(')">asin</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('min(')">min</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.acos(')">acos</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('max(')">max</button>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('Math.atan(')">atan</button>
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('asin(')">asin</button>
                     </div>
+                    <div class="col-3">
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('acos(')">acos</button>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('atan(')">atan</button>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('sinh(')">sinh</button>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay('cosh(')">cosh</button>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-secondary w-100" onclick="appendToDisplay(',')">,</button>
+                    </div>  
                 </div>
             </div>
         </div>
@@ -292,19 +307,20 @@
             var hy = {
                 expr: display.value,
             };
-            document.getElementById('stepsList').innerHTML = ''; 
+            document.getElementById('stepsList').innerHTML = '';
             try {
                 let steps = evaluateExpression(display.value);
                 steps.forEach(step => addStep(step));
-                
+
                 let result = math.evaluate(display.value);
                 hy.result = result;
 
                 addStep("= " + result);
-                
+
                 display.value = result;
             } catch (error) {
                 display.value = 'Error';
+                hy.result = 'Error';
                 console.error(error);
                 setTimeout(() => {
                     clearDisplay();
@@ -317,6 +333,16 @@
 
         window.addEventListener('load', function () {
             updateHistory();
+
+            document.getElementById('copyToClipboard').addEventListener('click', function () {
+                let display = document.getElementById('display');
+                navigator.clipboard.writeText(display.value);
+
+                document.getElementById('copyToClipboard').innerHTML = '<i class="bi bi-clipboard-check"></i>';
+                setTimeout(() => {
+                    document.getElementById('copyToClipboard').innerHTML = '<i class="bi bi-clipboard"></i>';
+                }, 1000);
+            });
         });
 
         window.addEventListener('beforeunload', function () {
@@ -324,4 +350,5 @@
         });
     </script>
 </body>
+
 </html>
