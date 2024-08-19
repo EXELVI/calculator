@@ -9,8 +9,6 @@
 
 A responsive, feature-rich calculator built with HTML, CSS, JavaScript, and Bootstrap. It supports basic arithmetic operations, advanced scientific functions, and provides a detailed step-by-step solution.
 
-![Calculator Screenshot](screenshot.png)
-
 ## Features
 
 - **Basic Operations:** Addition, subtraction, multiplication, division.
